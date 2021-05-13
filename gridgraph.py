@@ -72,6 +72,8 @@ class GridGraph():
         self.filename = vertexFilename
         self.partition = partition
         self.V = 0
+        self.E = 0
+        self.T = "unweighted"
         pass
 
     def preprocess(self):
@@ -93,9 +95,21 @@ class GridGraph():
             queue[currentWorkerIndex].append(line)
             currentWorkerIndex = currentWorkerIndex ^ 1
             line = vertexFile.readline()
+            self.E += 1
 
         for item in queue:
             item.append("end")
+
+        self.generateMetadata(self.V, self.E, self.partition, self.T)
+
+    def generateMetadata(self, V, E, P, T):
+        fo = open("metadata", "w")
+        fo.write("vertice number:" + str(V) + '\n')
+        fo.write("edge number:" + str(E) + '\n')
+        fo.write("partition number:" + str(P) + '\n')
+        fo.write("type:" + T + '\n')
+        fo.flush()
+        fo.close()
 
     def readVertices(self):
         pass
