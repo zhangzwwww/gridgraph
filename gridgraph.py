@@ -111,13 +111,44 @@ class GridGraph():
         fo.flush()
         fo.close()
 
-    def readVertices(self):
-        pass
+    def streamVertice(self, process):
+        sum = 0
+        for i in range(0, self.V):
+            sum += process(i)
+        return sum
+
+    # streamEdge
+    # process: process function
+    # vertice: active_vertice set
+    # update_mode: 1 source oriented update 2 target oriented update
+    def streamEdge(self, process, vertice, update_mode=1):
+        sum = 0
+        if update_mode == 1:
+            for v in vertice:
+                row, _ = getP(int(v), 0, self.partition)
+                for column in range(0, self.partition):
+                    try:
+                        data = self.readVertices(row, column)
+                        for d in data:
+                            if int(d["source"]) == v:
+                                sum += process(d)
+                    except FileNotFoundError:
+                        continue
+        elif update_mode == 0:
+            pass
+        return sum
+
+    def readVertices(self, row, column):
+        f = open("blocks/" + str(row) + "-" + str(column), "r")
+        line = f.readline().replace('\n', '')
+        data = []
+        while line is not None and line != '':
+            source = int(line.split(',')[0])
+            target = int(line.split(',')[1])
+            data.append({"source": source, "target": target})
+            line = f.readline().replace('\n', '')
+        f.close()
+        return data
 
     def getEdgeIndex(self, source, target):
         pass
-
-
-if __name__ == "__main__":
-    gg = GridGraph("input", 8, 0, 0)
-    gg.preprocess()
