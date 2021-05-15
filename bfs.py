@@ -3,7 +3,7 @@ import sys
 
 
 if __name__ == "__main__":
-    graph = GridGraph("input", 8, 0, 0)
+    graph = GridGraph("input", 8, 0, 0, 2)
     graph.preprocess()
 
     parent = [-1 for i in range(0, graph.V)]

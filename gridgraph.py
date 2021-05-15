@@ -68,12 +68,13 @@ class EdgeWorker(threading.Thread):
 # cacheSize: cache Size
 # edgeWorkerNumber: workder number
 class GridGraph():
-    def __init__(self, vertexFilename, partition, cacheSize, edgeWorderNumber):
+    def __init__(self, vertexFilename, partition, cacheSize, edgeWorderNumber, Q):
         self.filename = vertexFilename
         self.partition = partition
         self.V = 0
         self.E = 0
         self.T = "unweighted"
+        self.Q = Q
         pass
 
     def preprocess(self):
@@ -124,18 +125,41 @@ class GridGraph():
     def streamEdge(self, process, vertice, update_mode=1):
         sum = 0
         if update_mode == 1:
-            for v in vertice:
-                row, _ = getP(int(v), 0, self.partition)
-                for column in range(0, self.partition):
-                    try:
-                        data = self.readVertices(row, column)
-                        for d in data:
-                            if int(d["source"]) == v:
-                                sum += process(d)
-                    except FileNotFoundError:
-                        continue
+            for Qrow in range(0, self.Q):
+                for Qcolumn in range(0, self.Q):
+                    for Prow in range(0, int(self.partition / self.Q)):
+                        for Pcolumn in range(0, int(self.partition / self.Q)):
+                            row = Prow + Qrow * int(self.partition / self.Q)
+                            column = Pcolumn + Qcolumn * int(self.partition / self.Q)
+                            sourceList = self.getPartitionSourceVertices(row, column)
+                            for v in sourceList:
+                                if v in vertice:
+                                    try:
+                                        data = self.readVertices(row, column)
+                                        for d in data:
+                                            if int(d["source"]) in vertice:
+                                                sum += process(d)
+                                    except FileNotFoundError:
+                                        continue
+                                    continue
         elif update_mode == 0:
-            pass
+            for Qcolumn in range(0, self.Q):
+                for Qrow in range(0, self.Q):
+                    for Pcolumn in range(0, int(self.partition / self.Q)):
+                        for Prow in range(0, int(self.partition / self.Q)):
+                            row = Prow + Qrow * int(self.partition / self.Q)
+                            column = Pcolumn + Qcolumn * int(self.partition / self.Q)
+                            sourceList = self.getPartitionSourceVertices(row, column)
+                            for v in sourceList:
+                                if v in vertice:
+                                    try:
+                                        data = self.readVertices(row, column)
+                                        for d in data:
+                                            if int(d["source"]) in vertice:
+                                                sum += process(d)
+                                    except FileNotFoundError:
+                                        continue
+                                    continue
         return sum
 
     def readVertices(self, row, column):
@@ -152,3 +176,9 @@ class GridGraph():
 
     def getEdgeIndex(self, source, target):
         pass
+
+    def getPartitionSourceVertices(self, row, column):
+        return [i for i in range(row * self.partition, (row + 1) * self.partition)]
+
+    def getPartitionTargetVertices(self, row, column):
+        return [i for i in range(column * self.partition, (column + 1) * self.partition)]
