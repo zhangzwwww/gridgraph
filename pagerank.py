@@ -25,7 +25,7 @@ if __name__ == "__main__":
         newpr[int(edge["target"])] += pr[int(edge["source"])] / deg[int(edge["source"])]
         return 1
 
-    def compute(vertices, newpr=newpr, pr = pr,d =damping):
+    def compute(vertices, newpr=newpr, pr=pr,d=damping,diff=diff):
         newpr[vertices] = 1 - d + d * newpr[vertices]
         diff += abs(newpr[vertices] - pr[vertices])
         return 1
