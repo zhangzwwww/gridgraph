@@ -1,4 +1,5 @@
 import threading
+from visual import Visual
 
 
 # get vertex in partition location
@@ -75,6 +76,7 @@ class GridGraph():
         self.E = 0
         self.T = "unweighted"
         self.Q = Q
+        self.vs = Visual(self.V, cacheSize, cacheSize, self.partition, self.Q)
         pass
 
     def preprocess(self):
@@ -129,6 +131,10 @@ class GridGraph():
                 for Qcolumn in range(0, self.Q):
                     for Prow in range(0, int(self.partition / self.Q)):
                         for Pcolumn in range(0, int(self.partition / self.Q)):
+                            print(Prow)
+                            self.vs.recovery()
+                            self.vs.highlight(int(self.partition / self.Q) * Qrow + Prow,
+                                              int(self.partition / self.Q) * Qcolumn + Pcolumn)
                             row = Prow + Qrow * int(self.partition / self.Q)
                             column = Pcolumn + Qcolumn * int(self.partition / self.Q)
                             sourceList = self.getPartitionSourceVertices(row, column)
@@ -136,6 +142,7 @@ class GridGraph():
                                 if v in vertice:
                                     try:
                                         data = self.readVertices(row, column)
+                                        # self.vs.drawCurrentState(data)
                                         for d in data:
                                             if int(d["source"]) in vertice:
                                                 sum += process(d)
@@ -147,6 +154,9 @@ class GridGraph():
                 for Qrow in range(0, self.Q):
                     for Pcolumn in range(0, int(self.partition / self.Q)):
                         for Prow in range(0, int(self.partition / self.Q)):
+                            self.vs.recovery()
+                            self.vs.highlight(int(self.partition / self.Q) * Qrow + Prow,
+                                              int(self.partition / self.Q) * Qcolumn + Pcolumn)
                             row = Prow + Qrow * int(self.partition / self.Q)
                             column = Pcolumn + Qcolumn * int(self.partition / self.Q)
                             sourceList = self.getPartitionSourceVertices(row, column)
