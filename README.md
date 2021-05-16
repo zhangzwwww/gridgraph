@@ -9,3 +9,10 @@ python3 bfs.py 1
 ```
 
 the argument of bfs.py is the start node of the bfs traversal
+
+## pagerank
+
+```bash
+make clean
+python3 pagerank.py
+```
