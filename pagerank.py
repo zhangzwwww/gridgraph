@@ -18,14 +18,9 @@ if __name__ == "__main__":
         return 1
 
     graph.streamEdge(compute_deg, vert)
-
+    print("deg of each verticie", deg)
     def contribute(edge):
         newpr[int(edge["target"])] += pr[int(edge["source"])] / deg[int(edge["source"])]
-        return 1
-
-    def compute(vertices, newpr=newpr, pr=pr, d=damping, diff=diff):
-        newpr[vertices] = 1 - d + d * newpr[vertices]
-        diff += abs(newpr[vertices] - pr[vertices])
         return 1
 
     graph.streamEdge(compute_deg, vert)
@@ -34,8 +29,14 @@ if __name__ == "__main__":
         diff = 0
         newpr = [0 for i in range(0, graph.V)]
         graph.streamEdge(contribute, vert)
-        graph.streamVertice(compute)
+        
+        def compute(vertices, newpr=newpr, pr=pr, d=damping, diff=diff):
+            newpr[int(vertices)] = 1 - d + d * newpr[int(vertices)]
+            return abs(newpr[int(vertices)]-pr[int(vertices)])
+        diff = graph.streamVertice(compute)
+        print("current result of difference", diff/graph.V)
         newpr, pr = pr, newpr
-        converged = (diff/graph.V <= 0.0001)
+        print("current result of pagerank: ", pr)
+        converged = (diff/graph.V <= 0.001)
 
     print("final result of pagerank: ", pr)
