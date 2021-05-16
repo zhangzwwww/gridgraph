@@ -47,18 +47,21 @@ class Visual():
                        self.left_buffer + self.block_width * (row + 1)),
                       (255, 0, 0), -1)
         cv2.imshow('rect', self.canvas)
-        cv2.waitKey(0)
 
-    def drawCurrentState(self, data):
+    def drawCurrentState(self, row, column, data):
         font = cv2.FONT_HERSHEY_SIMPLEX
-        text = "current block data: \n"
+        text = "block: " + str(row) + '-' + str(column) + '\n'
+        if len(data) == 0:
+            text = text + "current block empty"
+        else:
+            text = text + "current block data: \n"
         for d in data:
             text = text + str(d) + '\n'
         height = 900
         for i, txt in enumerate(text.split('\n')):
             height = height + 20
             cv2.putText(self.canvas, txt, (10, height), font, .6, (255, 255, 255), 1, 2)
-        cv2.imshow('show', self.canvas)
+        cv2.imshow('rect', self.canvas)
         cv2.waitKey(0)
 
     def destroy(self):

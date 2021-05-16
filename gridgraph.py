@@ -131,24 +131,27 @@ class GridGraph():
                 for Qcolumn in range(0, self.Q):
                     for Prow in range(0, int(self.partition / self.Q)):
                         for Pcolumn in range(0, int(self.partition / self.Q)):
-                            print(Prow)
                             self.vs.recovery()
                             self.vs.highlight(int(self.partition / self.Q) * Qrow + Prow,
                                               int(self.partition / self.Q) * Qcolumn + Pcolumn)
                             row = Prow + Qrow * int(self.partition / self.Q)
                             column = Pcolumn + Qcolumn * int(self.partition / self.Q)
                             sourceList = self.getPartitionSourceVertices(row, column)
+                            data = []
                             for v in sourceList:
                                 if v in vertice:
                                     try:
                                         data = self.readVertices(row, column)
-                                        # self.vs.drawCurrentState(data)
                                         for d in data:
                                             if int(d["source"]) in vertice:
                                                 sum += process(d)
                                     except FileNotFoundError:
                                         continue
                                     continue
+                            if len(data) == 0:
+                                self.vs.drawCurrentState(row, column, [])
+                            else:
+                                self.vs.drawCurrentState(row, column, data)
         elif update_mode == 0:
             for Qcolumn in range(0, self.Q):
                 for Qrow in range(0, self.Q):

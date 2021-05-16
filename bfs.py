@@ -22,10 +22,18 @@ if __name__ == "__main__":
         active_out.append(data["target"])
         return 1
 
+    iteration = 1
+
     while active_vertices != 0:
+        print("iteration: ", iteration)
+        iteration += 1
         active_in, active_out = active_out, active_in
         active_out = []
         active_vertices = graph.streamEdge(get_active_vertice, active_in)
+        new_vertice = ""
+        for i in active_out:
+            new_vertice = new_vertice + str(i) + ' '
+        print("new discovered vertices: ", new_vertice)
 
     discovered_vertice = 0
     for d in parent:
