@@ -163,6 +163,7 @@ class GridGraph():
                             row = Prow + Qrow * int(self.partition / self.Q)
                             column = Pcolumn + Qcolumn * int(self.partition / self.Q)
                             sourceList = self.getPartitionSourceVertices(row, column)
+                            data = []
                             for v in sourceList:
                                 if v in vertice:
                                     try:
@@ -173,6 +174,11 @@ class GridGraph():
                                     except FileNotFoundError:
                                         continue
                                     continue
+                            if len(data) == 0:
+                                self.vs.drawCurrentState(row, column, [])
+                            else:
+                                self.vs.drawCurrentState(row, column, data)
+
         return sum
 
     def readVertices(self, row, column):
